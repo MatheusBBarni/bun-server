@@ -55,9 +55,6 @@ export default class App {
     if (!route) {
       return new Response(`Error: path -> ${path}, not found`, { status: 404 });
     }
-    // const { handler } = route
-
-    // const response = await 
 
     return route.handler(appRequest)
   }
