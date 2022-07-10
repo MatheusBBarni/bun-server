@@ -1,0 +1,12 @@
+{
+  "name": "bun-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "engines": {
+    "bun": "0.1.2"
+  },
+  "scripts": {
+    "start": "bun ./server.ts"
+  }
+}
