@@ -1,9 +1,10 @@
-import { Route, HandlerFn, HttpMethods, AppRequest, Routes } from './types/app-types'
 import { httpMethodToEnum } from './utils/app-utils'
+import { HandlerFn, HttpMethods, AppRequest, Routes } from './types/app-types'
 
 export default class App {
-  private baseURI: string
+  private port: number
   private routes: Routes
+  private baseURI: string
 
   constructor(baseURI: string) {
     this.routes = {
@@ -35,7 +36,7 @@ export default class App {
     return this
   }
 
-  async start(req: Request): Promise<Response> {
+  private async start(req: Request): Promise<Response> {
     // Destructuring is causing segfault - weird
     // const { url, method, headers, mode, redirect, formData, text, blob } = request
     
@@ -57,5 +58,30 @@ export default class App {
     }
 
     return route.handler(appRequest)
+  }
+
+  async serve(port: number) {
+    this.port = port
+    console.log('Started server!')
+    const app = this
+    // Start a fast HTTP server from a function
+    // @ts-expect-error
+    Bun.serve({
+      async fetch(serverRequest: Request) {
+
+        return app.start(serverRequest)
+      },
+      // baseURI: "http://localhost:3000",
+      // error(err: Error) {
+      //   return new Response("uh oh! :(\n" + err.toString(), { status: 500 });
+      // },
+
+      // this boolean enables bun's default error handler
+      // development: process.env.NODE_ENV !== "production",
+      // certFile: './cert.pem',
+      // keyFile: './key.pem',
+
+      port: this.port, // number or string
+    });
   }
 }
